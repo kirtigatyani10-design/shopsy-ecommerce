@@ -108,5 +108,4 @@ The project includes complete user shopping flow from product browsing to checko
 ---
 
 ## 👩‍💻 Author
-## 📂 Project Structure
 Developed with **KIRTI GATYANI** as a full-stack project.
