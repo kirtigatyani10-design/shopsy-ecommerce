@@ -46,4 +46,13 @@ src/
 
 ---
 
+## 🚀 Highlights
+
+- Fully responsive design
+- Clean UI with smooth animations
+- Modular React component structure
+- Beginner-friendly & scalable
+
+---
+
 Author - Kirti Gatyani 
