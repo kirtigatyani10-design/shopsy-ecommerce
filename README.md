@@ -1,4 +1,4 @@
-# React + Vite
+
 # Shopsy – Full Stack E-Commerce Website 🛒
 
 Shopsy is a modern full-stack e-commerce web application built using React and Node.js, React, Tailwind CSS, Node.js, Express, and MongoDB.  
