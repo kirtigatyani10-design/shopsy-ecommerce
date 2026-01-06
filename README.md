@@ -13,7 +13,7 @@ The project includes complete user shopping flow from product browsing to checko
 ![Products Page](screenshots/products.png)
 
 ### 🛒 Cart Page
-![Cart Page](screenshots/cart.png)
+![Cart Page](screenshots/carts.png)
 
 ### 💳 Checkout Page
 ![Checkout Page](screenshots/checkout.png)
