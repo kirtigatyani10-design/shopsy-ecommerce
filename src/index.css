@@ -1,0 +1,32 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+body {
+  font-family: 'Merienda', cursive;
+}
+
+@layer utilities {
+  .popup-bg {
+    @apply fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center;
+  }
+
+  .popup-box {
+    @apply bg-white dark:bg-gray-900 p-6 rounded-lg shadow-lg w-[330px] 
+           transform transition-all duration-300;
+  }
+
+  .popup-open {
+    @apply scale-100 opacity-100;
+  }
+
+  .popup-close {
+    @apply scale-90 opacity-0;
+  }
+}
+
+/* .input {
+  @apply w-full border px-3 py-2 rounded-md 
+  focus:outline-none focus:ring-2 focus:ring-primary
+  dark:bg-gray-700 dark:border-gray-600;
+} */
