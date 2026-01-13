@@ -3,7 +3,7 @@ import { useWishlist } from "../../context/WishlistContext";
 import { Link } from "react-router-dom";
 
 const Wishlist = () => {
-  const { wishlist, toggleWishlist } = useWishlist();
+  const { wishlist, removeWishlistItem } = useWishlist();
 
   if (wishlist.length === 0) {
     return (
@@ -20,32 +20,28 @@ const Wishlist = () => {
       </h1>
 
       <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
-        {wishlist.map((item) => (
-          <div
-            key={item._id}
-            className="border p-4 rounded shadow"
-          >
-            <Link to={`/product/${item._id}`}>
-              <img
-                src={item.image}
-                className="h-40 mx-auto"
-              />
-              <h3 className="mt-2 font-semibold">
-                {item.name}
-              </h3>
-              <p className="text-primary font-bold">
-                ₹{item.price}
-              </p>
-            </Link>
+        {wishlist.map((item) => {
+          if (!item?.productId?._id) return null;
 
-            <button
-              onClick={() => toggleWishlist(item)}
-              className="mt-3 text-sm text-red-500"
-            >
-              Remove
-            </button>
-          </div>
-        ))}
+          const product = item.productId;
+
+          return (
+            <div key={product._id} className="border p-4 rounded shadow">
+              <Link to={`/product/${product._id}`}>
+                <img src={product.image} className="h-40 mx-auto" />
+                <h3 className="mt-2 font-semibold">{product.name}</h3>
+                <p className="text-primary font-bold">₹{product.price}</p>
+              </Link>
+
+              <button
+                onClick={() => removeWishlistItem(product._id)}
+                className="mt-3 text-sm text-red-500"
+              >
+                Remove
+              </button>
+            </div>
+          );
+        })}
       </div>
     </div>
   );

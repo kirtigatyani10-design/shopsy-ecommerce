@@ -28,6 +28,8 @@ import Order from "./components/Order/Order";
 import { WishlistProvider } from "./context/WishlistContext";
 import Wishlist from "./components/Wishlist/Wishlist";
 import CategoryProducts from "./components/Categories/CategoryProducts";
+import ErrorPage from "./components/ErrorPage/ErrorPage";
+import OAuthSuccess from "./components/Popup/authsuccess";
 
 function initGuestCartId() {
   let token = localStorage.getItem("token");
@@ -100,11 +102,14 @@ const App = () => {
 
   // OTHER PAGES
   const Categories = () => (
-    <div className="mt-24 text-center text-3xl font-bold">Category Page</div>
+    <div className="mt-24 text-center text-3xl font-bold 
+    bg-white dark:bg-gray-900 dark:text-white duration-200">
+      Category Page
+    </div>
   );
 
   const AllProductsPage = () => (
-    <div className="mt-24">
+    <div className="mt-24 bg-white dark:bg-gray-900 dark:text-white duration-200">
       <Products />
     </div>
   );
@@ -123,72 +128,81 @@ const App = () => {
   // ROUTES
   return (
     <WishlistProvider>
-    <CartProvider>
-      <BrowserRouter>
-        <Navbar
-          handleOrderPopup={handleOrderPopup}
-          handleLoginPopup={handleLoginPopup}
-          handleRegisterPopup={handleRegisterPopup}
-          query={query}
-          setQuery={setQuery}
-        />
-
-        {/* POPUPS */}
-        <LoginPopup
-          loginPopup={LoginPopupState}
-          setLoginPopup={setLoginPopupState}
-          setRegisterPopup={setRegisterPopupState}
-        />
-
-        <OrderPopup
-          orderPopup={OrderPopupState}
-          setOrderPopup={setOrderPopupState}
-        />
-
-        <RegisterPopup
-          registerPopup={RegisterPopupState}
-          setRegisterPopup={setRegisterPopupState}
-          setLoginPopup={setLoginPopupState}
-        />
-
-        <Routes>
-          <Route path="/" element={<Home />} />
-          <Route path="/products" element={<ProductsPage />} />
-          <Route path="/product/:id" element={<SingleProduct />} />
-          <Route path="/categories" element={<Categories />} />
-          <Route path="/cart" element={<Cart />} />
-          <Route path="/orders" element={<Order />} />
-          <Route path="/wishlist" element={<Wishlist />} />
-          <Route path="/categories/:slug" element={<CategoryProducts />} />
-
-          <Route
-            path="/account"
-            element={
-              <ProtectedRoute>
-                <Account />
-              </ProtectedRoute>
-            }
+      <CartProvider>
+        <BrowserRouter>
+          <Navbar 
+            handleOrderPopup={handleOrderPopup}
+            handleLoginPopup={handleLoginPopup}
+            handleRegisterPopup={handleRegisterPopup}
+            query={query}
+            setQuery={setQuery}
           />
-          <Route
-            path="/profile"
-            element={
-              <ProtectedRoute>
-                <Profile />
-              </ProtectedRoute>
-            }
+
+          {/* POPUPS */}
+          <LoginPopup
+            loginPopup={LoginPopupState}
+            setLoginPopup={setLoginPopupState}
+            setRegisterPopup={setRegisterPopupState}
           />
-          <Route
-            path="/checkout"
-            element={
-              <ProtectedRoute setLoginPopup={setLoginPopupState}>
-                <Checkout />
-              </ProtectedRoute>
-            }
+
+          <OrderPopup
+            orderPopup={OrderPopupState}
+            setOrderPopup={setOrderPopupState}
           />
-        </Routes>
-        <Footer />
-      </BrowserRouter>
-    </CartProvider>
+
+          <RegisterPopup
+            registerPopup={RegisterPopupState}
+            setRegisterPopup={setRegisterPopupState}
+            setLoginPopup={setLoginPopupState}
+          />
+
+          <Routes >
+            <Route path="/" element={<Home />} />
+            <Route path="/products" element={<ProductsPage />} />
+            <Route path="/product/:id" element={<SingleProduct />} />
+            <Route path="/categories" element={<Categories />} />
+            <Route path="/cart" element={<Cart />} />
+            <Route path="/orders" element={<Order />} />
+            <Route path="/wishlist" element={<Wishlist />} />
+            <Route path="/categories/:slug" element={<CategoryProducts />} />
+            <Route path="/oauth-success" element={<OAuthSuccess />} />
+            <Route path="/login" element={<LoginPopup
+            loginPopup={LoginPopupState}
+            setLoginPopup={setLoginPopupState}
+            setRegisterPopup={setRegisterPopupState}
+          />} />
+            
+
+            {/* ERROR / 404 ROUTE */}
+            <Route path="*" element={<ErrorPage />} />
+            <Route
+              path="/account"
+              element={
+                <ProtectedRoute>
+                  <Account />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/profile"
+              element={
+                <ProtectedRoute>
+                  <Profile />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/checkout"
+              element={
+                <ProtectedRoute setLoginPopup={setLoginPopupState}>
+                  <Checkout />
+                </ProtectedRoute>
+              }
+            />
+          </Routes>
+          <Footer />
+        </BrowserRouter>
+      </CartProvider>
     </WishlistProvider>
   );
 };

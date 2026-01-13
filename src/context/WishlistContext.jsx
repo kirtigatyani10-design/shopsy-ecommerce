@@ -1,59 +1,114 @@
 import { createContext, useContext, useEffect, useState } from "react";
+import { getHeaders } from "../utils/utils";
 
 const WishlistContext = createContext();
 
 export const WishlistProvider = ({ children }) => {
-
-  // logged-in user
-  const user = JSON.parse(localStorage.getItem("user"));
-  const userId = user?.data?._id;
-
-  // user-based storage key
-  const storageKey = userId ? `wishlist_${userId}` : "wishlist_guest";
-
   const [wishlist, setWishlist] = useState([]);
+  const [wishlistCount, setWishlistCount] = useState(0);
 
-  // LOAD wishlist (on refresh)
-  useEffect(() => {
-    const saved = JSON.parse(localStorage.getItem(storageKey)) || [];
-    setWishlist(saved);
-    console.log("Loaded wishlist from storage:", storageKey);  
-  }, [storageKey]);
+  // CHECK PRODUCT IN WISHLIST
+  const isInWishlist = (productId) => {
+    if (!Array.isArray(wishlist)) return false;
 
-  // SAVE wishlist
-  useEffect(() => {
-    localStorage.setItem(storageKey, JSON.stringify(wishlist));
-    
-  }, [wishlist, storageKey]);
+    return wishlist.some(
+      (product) => product?._id === productId
+    );
+  };
 
-  // add / remove
-  const toggleWishlist = (product) => {
-    const exists = wishlist.find((p) => p._id === product._id);
+  // LOAD WISHLIST 
+  const loadWishlist = async () => {
+    try {
+      const res = await fetch(
+        `${import.meta.env.VITE_API_URL}/wishlist`,
+        {
+          method: "GET",
+          headers: getHeaders(),
+        }
+      );
 
-    if (exists) {
-      setWishlist(wishlist.filter((p) => p._id !== product._id));
-    } else {
-      setWishlist([...wishlist, product]);
+      const data = await res.json();
+      if (data?.isSuccess) {
+        setWishlist(data.data?.products || []);
+        setWishlistCount(data.data?.products?.length || 0);
+      }
+    } catch (err) {
+      console.log("GET WISHLIST ERROR:", err);
+      setWishlist([]);
+      setWishlistCount(0);
     }
   };
 
-  const isInWishlist = (id) =>
-    wishlist.some((item) => item._id === id);
 
-  // CLEAR on logout
-  const clearWishlist = () => {
-    setWishlist([]);
-    localStorage.removeItem(storageKey);
+  // ADD / REMOVE (OPTIMISTIC)
+  const addToWishlist = async (product) => {
+    setWishlist((prev) => [...prev, product]);
+    setWishlistCount((c) => c + 1);
+
+    try {
+      await fetch(
+        `${import.meta.env.VITE_API_URL}/wishlist/add`,
+        {
+          method: "POST",
+          headers: getHeaders(),
+          body: JSON.stringify({ productId: product._id }),
+        }
+      );
+    } catch {
+      loadWishlist();
+    }
   };
+
+  // REMOVE (Wishlist page)
+  const removeWishlistItem = async (productId) => {
+    if (!productId) return;
+
+    setWishlist((prev) =>
+      prev.filter((p) => p._id !== productId)
+    );
+    setWishlistCount((c) => Math.max(c - 1, 0));
+
+    try {
+      const res = await fetch(
+        `${import.meta.env.VITE_API_URL}/wishlist/remove/${productId}`,
+        {
+          method: "DELETE",
+          headers: getHeaders(),
+        }
+      );
+
+      const data = await res.json();
+      if (!data?.isSuccess) {
+        loadWishlist();
+      }
+    } catch (err) {
+      console.log("REMOVE WISHLIST ERROR:", err);
+      loadWishlist();
+    }
+  };
+
+  // TOGGLE WISHLIST
+  const toggleWishlist = (product) => {
+    if (isInWishlist(product._id)) {
+      removeWishlistItem(product._id);
+    } else {
+      addToWishlist(product);
+    }
+  };
+
+  // ON APP LOAD
+  useEffect(() => {
+    loadWishlist();
+  }, []);
 
   return (
     <WishlistContext.Provider
       value={{
         wishlist,
-        wishlistCount: wishlist.length,
+        wishlistCount,
         toggleWishlist,
+        removeWishlistItem,
         isInWishlist,
-        clearWishlist,
       }}
     >
       {children}
@@ -62,3 +117,4 @@ export const WishlistProvider = ({ children }) => {
 };
 
 export const useWishlist = () => useContext(WishlistContext);
+

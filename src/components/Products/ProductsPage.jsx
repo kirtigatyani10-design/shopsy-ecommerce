@@ -15,7 +15,7 @@ const ProductsPage = () => {
   const { setCartCount } = useCart();
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
-  
+
   useEffect(() => {
     fetch("http://localhost:5000/api/products?page=1&limit=50")
       .then((res) => res.json())
@@ -107,61 +107,64 @@ const ProductsPage = () => {
         {/* Products Grid */}
         <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-8 place-items-center">
 
-          {products.map((item) => (
-            <Link
-              to={`/product/${item._id}`}
-              key={item._id}
-              className="space-y-3 shadow-md p-3 rounded-md bg-primary/15 dark:bg-gray-800 block hover:scale-105 duration-200"
-            >
-              <button
-                onClick={(e) => {
-                  e.preventDefault();
-                  toggleWishlist(item);
-                }}
-                className="absolute top-2 right-2 text-xl"
+          {products.map((item) => {
+            // ✅ SAFETY CHECK (YAHI LINE)
+            if (!item || !item._id) return null;
+
+            return (
+              <Link
+                to={`/product/${item._id}`}
+                key={item._id}
+                className="relative group space-y-3 shadow-md p-3 rounded-md bg-primary/15"
               >
-                {isInWishlist(item._id) ? (
-                  <FaHeart className="text-red-500" />
-                ) : (
-                  <FaRegHeart />
-                )}
-              </button>
+                <button
+                  onClick={(e) => {
+                    e.preventDefault();
+                    toggleWishlist(item);
+                  }}
+                  className="absolute top-2 right-2 text-xl opacity-0 group-hover:opacity-100 transition"
+                >
+                  {isInWishlist(item._id) ? (
+                    <FaHeart className="text-red-500" />
+                  ) : (
+                    <FaRegHeart />
+                  )}
+                </button>
 
-              <img
-                src={item.image}
-                alt={item.name}
-                className="h-[220px] w-[150px] object-cover rounded-md mx-auto"
-              />
+                <img
+                  src={item.image}
+                  alt={item.name}
+                  className="h-[220px] w-[150px] object-cover rounded-md mx-auto"
+                />
 
-              <h3 className="font-semibold">{item.name}</h3>
-              <p className="text-sm text-gray-700">
-                {typeof item.category === "string"
-                  ? item.category
-                  : item.category?.name}
-              </p>
+                <h3 className="font-semibold">{item.name}</h3>
+                <p className="text-sm text-gray-700">
+                  {typeof item.category === "string"
+                    ? item.category
+                    : item.category?.name}
+                </p>
 
-              <div className="flex items-center gap-1">
-                <FaStar className="text-yellow-400" />
-                <span>{item.rating}</span>
-              </div>
+                <div className="flex items-center gap-1">
+                  <FaStar className="text-yellow-400" />
+                  <span>{item.rating}</span>
+                </div>
 
-              <p className="font-bold text-primary mt-1">₹{item.price}</p>
+                <p className="font-bold text-primary mt-1">₹{item.price}</p>
 
-              <button
-                onClick={(e) => handleAddToCart(item._id, e)}
-                className="mt-3 w-full bg-primary text-white py-2 rounded-full 
+                <button
+                  onClick={(e) => handleAddToCart(item._id, e)}
+                  className="mt-3 w-full bg-primary text-white py-2 rounded-full 
                 hover:bg-secondary transition"
-              >
-                Add to Cart
-              </button>
-            </Link>
-
-          ))}
+                >
+                  Add to Cart
+                </button>
+              </Link>
+            );
+          })};
         </div>
-
       </div>
     </div>
   );
-};
+}
 
 export default ProductsPage;

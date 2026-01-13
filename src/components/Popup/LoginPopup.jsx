@@ -1,6 +1,8 @@
-import React, { useState } from "react";
+import React, { useState, } from "react";
 import { IoCloseOutline } from "react-icons/io5";
 import { FaFacebook, FaGoogle } from "react-icons/fa";
+
+// import { FcGoogle } from "react-icons/fc";
 
 const LoginPopup = ({ loginPopup, setLoginPopup, setRegisterPopup }) => {
   const [email, setEmail] = useState("");
@@ -14,7 +16,7 @@ const LoginPopup = ({ loginPopup, setLoginPopup, setRegisterPopup }) => {
   };
 
   const handleGoogleLogin = () => {
-    alert("Google login coming soon!");
+    window.location.href = "http://localhost:5000/api/auth/google";
   };
 
   const handleBackdropClick = (e) => {
@@ -83,7 +85,7 @@ const LoginPopup = ({ loginPopup, setLoginPopup, setRegisterPopup }) => {
       localStorage.setItem("user", JSON.stringify(data));
       console.log("USER SAVED:", data);
       setLoginPopup(false);
-      window.location.href = ""; 
+      window.location.href = "";
       // window.location.reload(); 
 
     } catch (err) {
@@ -133,7 +135,7 @@ const LoginPopup = ({ loginPopup, setLoginPopup, setRegisterPopup }) => {
             placeholder="Enter Password"
             className="w-full border px-3 py-2 rounded-full mb-1"
           />
-          {errors.password && ( 
+          {errors.password && (
             <p className="text-red-500 text-xs mb-2">{errors.password}</p>
           )}
 
@@ -172,11 +174,24 @@ const LoginPopup = ({ loginPopup, setLoginPopup, setRegisterPopup }) => {
           <FaGoogle
             onClick={handleGoogleLogin}
             className="text-2xl cursor-pointer hover:text-primary"
-          />
+          /> 
         </div>
+
+        {/* <div className="mt-3">
+          <button
+            type="button"
+            className="btn w-100 d-flex align-items-center justify-content-center border"
+            style={{ backgroundColor: "#fff", fontWeight: "500" }}
+            onClick={handleGoogleLogin}
+          >
+            <FcGoogle size={25} className="me-2" />
+            Continue with Google
+          </button>
+        </div> */}
       </div>
     </div>
   );
 };
 
 export default LoginPopup;
+
