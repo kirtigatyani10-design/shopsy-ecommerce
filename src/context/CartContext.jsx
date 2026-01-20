@@ -18,14 +18,29 @@ export const CartProvider = ({ children }) => {
 
       if (data.isSuccess) {
         setCartCount(data.itemCount);
+      } else {
+        setCartCount(0);
       }
     } catch (err) {
       console.log("CART COUNT ERROR:", err);
+      setCartCount(0);
     }
   };
 
   useEffect(() => {
+    // intial load 
     fetchCartCount();
+
+    // listen for login/logout
+    const handleAuthChange = () => {
+      fetchCartCount();
+    };
+
+    window.addEventListener("auth-change", handleAuthChange);
+
+    return () => {
+      window.removeEventListener("auth-change", handleAuthChange);
+    };
   }, []);
 
   return (

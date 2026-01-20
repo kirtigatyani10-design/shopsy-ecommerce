@@ -9,6 +9,7 @@ import { useCart } from "../../context/CartContext";
 import { FaHeart } from "react-icons/fa";
 import { useWishlist } from "../../context/WishlistContext";
 import { FiLogOut } from "react-icons/fi";
+import { useNavigate } from "react-router-dom";
 
 const Menu = [
   { id: 1, name: "Home", link: "/" },
@@ -29,6 +30,7 @@ const Navbar = ({
   handleLoginPopup,
   handleRegisterPopup,
 }) => {
+  const navigate = useNavigate();
   const { clearWishlist } = useWishlist();
 
   const [query, setQuery] = useState("");
@@ -63,7 +65,9 @@ const Navbar = ({
     localStorage.removeItem("cartCount");
     localStorage.removeItem("guestCartId");
 
-    clearWishlist();
+    if (clearWishlist) clearWishlist();
+    navigate("/login");
+    
     // reset ui
     setToken(null);
     setOpenUserMenu(false);

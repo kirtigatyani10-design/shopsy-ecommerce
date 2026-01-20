@@ -82,7 +82,7 @@ const LoginPopup = ({ loginPopup, setLoginPopup, setRegisterPopup }) => {
       localStorage.removeItem("guestCartId");
       localStorage.removeItem("cartCount");
 
-      localStorage.setItem("user", JSON.stringify(data));
+      localStorage.setItem("user", JSON.stringify(data.data));
       console.log("USER SAVED:", data);
       setLoginPopup(false);
       window.location.href = "";

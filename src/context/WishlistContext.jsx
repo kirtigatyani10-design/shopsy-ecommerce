@@ -7,6 +7,11 @@ export const WishlistProvider = ({ children }) => {
   const [wishlist, setWishlist] = useState([]);
   const [wishlistCount, setWishlistCount] = useState(0);
 
+  const clearWishlist = () => {
+    setWishlist([]);
+    setWishlistCount(0);
+  };
+
   // CHECK PRODUCT IN WISHLIST
   const isInWishlist = (productId) => {
     if (!Array.isArray(wishlist)) return false;
@@ -18,6 +23,12 @@ export const WishlistProvider = ({ children }) => {
 
   // LOAD WISHLIST 
   const loadWishlist = async () => {
+    const token = localStorage.getItem("token");
+    if (!token) {
+      setWishlist([]);
+      setWishlistCount(0);
+      return;
+    }
     try {
       const res = await fetch(
         `${import.meta.env.VITE_API_URL}/wishlist`,
@@ -99,6 +110,16 @@ export const WishlistProvider = ({ children }) => {
   // ON APP LOAD
   useEffect(() => {
     loadWishlist();
+
+    const handler = () => {
+      loadWishlist();
+    }
+
+    window.addEventListener("auth-change", handler);
+
+    return () => {
+      window.removeEventListener("auth-change", handler);
+    };
   }, []);
 
   return (
@@ -109,6 +130,7 @@ export const WishlistProvider = ({ children }) => {
         toggleWishlist,
         removeWishlistItem,
         isInWishlist,
+        clearWishlist,
       }}
     >
       {children}

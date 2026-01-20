@@ -1,37 +1,48 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 
 const OAuthSuccess = () => {
   const navigate = useNavigate();
+  const hasRun = useRef(false);   // guard
 
   useEffect(() => {
-    const params = new URLSearchParams(window.location.search);
+    // Prevent double execution (React 18 StrictMode)
+    if (hasRun.current) return;
+    hasRun.current = true;
 
-    const token = params.get("token");
-    const userStr = params.get("user");
+    try {
+      const params = new URLSearchParams(window.location.search);
 
-    console.log("TOKEN FROM URL:", token);
-    console.log("USER FROM URL:", userStr);
+      const token = params.get("token");
+      const userStr = params.get("user");
 
-    if (token && userStr) {
-      try {
+      console.log("OAuth params:", { token, userStr });
+
+      if (!token || !userStr) {
+        navigate("/login", { replace: true });
+        return;
+      }
+
       const user = JSON.parse(decodeURIComponent(userStr));
 
-      //  TOKEN + USER SAVE
+      // Save auth data
       localStorage.setItem("token", token);
       localStorage.setItem("user", JSON.stringify(user));
-      navigate("/account");
 
-      } catch (err) {
-        console.log("ERROR PARSING USER:", err);
-        navigate("/login");
-      }
-    } else {
-      navigate("/login");
+      // Notify app (Navbar, contexts, etc.)
+      window.dispatchEvent(new Event("auth-change"));
+
+      // Redirect after successful login
+      navigate("/account", { replace: true });
+
+    } catch (error) {
+      console.error("OAuthSuccess error:", error);
+      navigate("/login", { replace: true });
     }
+
   }, [navigate]);
 
-  return <div>Logging in with Google...</div>;
+  return <div style={{ padding: 20 }}>Logging in with Google...</div>;
 };
 
 export default OAuthSuccess;

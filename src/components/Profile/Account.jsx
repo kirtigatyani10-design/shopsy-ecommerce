@@ -21,7 +21,21 @@ const Account = () => {
 
   // LOAD USER 
   useEffect(() => {
-    const stored = JSON.parse(localStorage.getItem("user"));
+    const raw = localStorage.getItem("user");
+    console.log("RAW USER FROM LS:", raw);
+
+    if (!raw || raw === "undefined") {
+      return;
+    }
+
+    let stored;
+    try {
+      stored = JSON.parse(raw);
+    } catch (e) {
+      console.error("JSON PARSE FAILED:", raw);
+      return;
+    }
+
     if (stored?.data) {
       setUser(stored.data);
       setFormData({

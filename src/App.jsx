@@ -30,6 +30,7 @@ import Wishlist from "./components/Wishlist/Wishlist";
 import CategoryProducts from "./components/Categories/CategoryProducts";
 import ErrorPage from "./components/ErrorPage/ErrorPage";
 import OAuthSuccess from "./components/Popup/authsuccess";
+import Login from "./components/Login/Login";
 
 function initGuestCartId() {
   let token = localStorage.getItem("token");
@@ -158,6 +159,7 @@ const App = () => {
 
           <Routes >
             <Route path="/" element={<Home />} />
+            <Route path="/login" element={<Login />} />
             <Route path="/products" element={<ProductsPage />} />
             <Route path="/product/:id" element={<SingleProduct />} />
             <Route path="/categories" element={<Categories />} />
@@ -169,9 +171,7 @@ const App = () => {
             <Route path="/login" element={<LoginPopup
             loginPopup={LoginPopupState}
             setLoginPopup={setLoginPopupState}
-            setRegisterPopup={setRegisterPopupState}
-          />} />
-            
+            setRegisterPopup={setRegisterPopupState} />} />
 
             {/* ERROR / 404 ROUTE */}
             <Route path="*" element={<ErrorPage />} />
