@@ -18,6 +18,8 @@ The project includes complete user shopping flow from product browsing to checko
 ### 💳 Checkout Page
 ![Checkout Page](screenshots/checkout.png)
 
+### Order Receipt
+![Order Receipt Screenshot](screenshots/order-receipt.png)
 ---
 
 ## 📂 Project Structure
