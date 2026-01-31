@@ -44,13 +44,13 @@ const OrderReceipt = () => {
   }
 
   return (
-    <div className="max-w-5xl mx-auto my-10 bg-white p-8 text-sm border">
+    <div className="max-w-5xl mx-auto my-10 bg-primary/20 p-8 text-sm border">
 
       {/* HEADER */}
       <div className="mb-6 relative">
         <div>
           {/* CENTER TITLE */}
-          <h1 className="text-xl font-semibold text-center">
+          <h1 className="text-xl text-primary font-semibold text-center">
             Order Receipt
           </h1>
 
@@ -66,30 +66,30 @@ const OrderReceipt = () => {
         </div>
 
         <div className="absolute top-0 right-0 flex gap-2">
-          <button className="border px-3 py-1 text-xs">EMAIL</button>
-          <button onClick={handlePrint} className="border px-3 py-1 text-xs">
+          <button className="bg-primary hover:bg-primary/80 rounded px-3 py-1 text-xs">EMAIL</button>
+          <button onClick={handlePrint} className="bg-primary hover:bg-primary/80 rounded px-3 py-1 text-xs">
             PRINT
           </button>
         </div>
       </div>
 
       {/* ORDER DETAILS */}
-      <h3 className="font-semibold mb-3">Order Details</h3>
+      <h3 className="text-xl font-semibold text-gray-950 mb-3">Order Details</h3>
 
-      <div className="grid grid-cols-2 gap-10 mb-6">
+      <div className="grid grid-cols-2 gap-10 mb-12">
         {/* BILL TO */}
         <div>
-          <p className="font-medium mb-1">Bill To</p>
-          <p>{order.user.firstName} {order.user.lastName}</p>
-          <p>{order.user.email}</p>
+          <p className="text-xl font-semibold mb-1">Bill To</p>
+          <p className="text-xl font-medium">{order.user.firstName} {order.user.lastName}</p>
+          <p className="text-xl font-medium">{order.user.email}</p>
           <p>{order.user.phone}</p>
         </div>
 
         {/* ORDER INFO */}
         <div>
-          <p><b>Order ID:</b> {order.orderID}</p>
+          <p><b className="font-semibold text-xl">Order ID:</b> {order.orderID}</p>
           <p>
-            <b>Order Date:</b>{" "}
+            <b className="text-xl font-semibold">Order Date:</b>{" "}
             {new Date(order.createdAt).toLocaleString()}
           </p>
           <p><b>Authorization Code:</b> {order.payment?.transactionID || "null"}</p>
@@ -97,10 +97,10 @@ const OrderReceipt = () => {
       </div>
 
       {/* ADDRESSES */}
-      <div className="grid grid-cols-3 gap-8 mb-6">
+      <div className="grid grid-cols-3 gap-10 mb-8">
         {/* BILLING */}
         <div>
-          <p className="font-medium mb-1">Billing Address</p>
+          <p className="font-medium text-xl text-primary mb-1">Billing Address</p>
           <p>{order.shippingAddress.addressLine1}</p>
           <p>{order.shippingAddress.city}</p>
           <p>{order.shippingAddress.state}</p>
@@ -110,7 +110,7 @@ const OrderReceipt = () => {
 
         {/* SHIPPING */}
         <div>
-          <p className="font-medium mb-1">Shipping Address</p>
+          <p className="font-medium text-xl text-primary mb-1">Shipping Address</p>
           <p>{order.shippingAddress.addressLine1}</p>
           <p>{order.shippingAddress.city}</p>
           <p>{order.shippingAddress.state}</p>
@@ -119,36 +119,36 @@ const OrderReceipt = () => {
         </div>
 
         {/* SHIPPER */}
-        <div>
-          <p className="font-medium mb-1">Shipper</p>
+        <div> 
+          <p className="font-medium text-xl text-primary mb-1">Shipper</p>
           <p>shopsywhk</p>
           <p>Shipper Contact</p>
         </div>
       </div>
 
       {/* ITEMS */}
-      <div className="border-t border-b py-3 mb-4">
+      <div className="border-t-2 border-black py-3 mb-4">
         {order.items.map((item, i) => (
           <div key={i} className="flex justify-between py-1">
-            <span>{item.name}</span>
-            <span>Qty: {item.quantity}</span>
-            <span>₹{item.price}</span>
+            <span className="text-gray-950 text-xl font-medium">{item.name}</span>
+            <span className="text-xl font-medium">Qty: {item.quantity}</span>
+            <span className="text-xl font-medium">₹{item.price}</span>
           </div>
         ))}
       </div>
 
       {/* TOTAL */}
-      <div className="text-right mb-6">
-        <p>Subtotal: ₹{order.pricing.subtotal}</p>
-        <p>Shipping: ₹{order.pricing.shippingFee}</p>
-        <p className="font-semibold border-t mt-2 pt-2">
+      <div className="text-right border-t-2 border-black mb-6">
+        <p className="text-xl">Subtotal: ₹{order.pricing.subtotal}</p>
+        <p className="text-xl">Shipping: ₹{order.pricing.shippingFee}</p>
+        <p className="font-semibold border-t-2 border-black mt-2 pt-2 text-xl">
           Total: ₹{order.pricing.total}
         </p>
       </div>
 
       {/* PAYMENT DETAILS */}
       <div className="bg-gray-100 p-4 mb-6">
-        <h4 className="font-semibold mb-2">Payment Details</h4>
+        <h4 className="font-semibold text-xl mb-2">Payment Details</h4>
 
         <div className="grid grid-cols-2 gap-6">
           <div>
@@ -173,12 +173,12 @@ const OrderReceipt = () => {
 
       {/* ACTION BUTTONS */}
       <div className="flex justify-center gap-4">
-        <button className="border px-6 py-2 text-blue-600 text-sm">
+        <button className="bg-primary hover:bg-primary/80 rounded text-white px-6 py-2 text-sm">
           RETRY
         </button>
         <button
           onClick={() => navigate("/account?tab=orders")}
-          className="border px-6 py-2 text-red-600 text-sm"
+          className="bg-primary hover:bg-primary/80 rounded px-6 py-2 text-white text-sm"
         >
           CLOSE
         </button>
