@@ -13,40 +13,40 @@ const MyOrders = () => {
   }, []);
 
   const loadMyOrders = async () => {
-  try {
-    const stored = JSON.parse(localStorage.getItem("user"));
-    const userId = stored?.data?._id || stored?._id;
+    try {
+      const stored = JSON.parse(localStorage.getItem("user"));
+      const userId = stored?.data?._id || stored?._id;
 
-    if (!userId) {
-      setOrders([]);
-      setLoading(false);
-      return;
-    }
-
-    const res = await fetch(
-      `${import.meta.env.VITE_API_URL}/orders/myorder/${userId}`,
-      {
-        method: "GET",
-        headers: getHeaders(),
+      if (!userId) {
+        setOrders([]);
+        setLoading(false);
+        return;
       }
-    );
 
-    const data = await res.json();
-    console.log("MY ORDERS API RESPONSE:", data);
+      const res = await fetch(
+        `${import.meta.env.VITE_API_URL}/orders/myorder/${userId}`,
+        {
+          method: "GET",
+          headers: getHeaders(),
+        }
+      );
 
-    if (data.isSuccess && data.order) {
-      // 🔥 KEY FIX
-      setOrders([data.order]);
-    } else {
+      const data = await res.json();
+      console.log("MY ORDERS API RESPONSE:", data);
+
+      // ✅ FINAL FIX
+      if (data.isSuccess && Array.isArray(data.data)) {
+        setOrders(data.data);
+      } else {
+        setOrders([]);
+      }
+    } catch (err) {
+      console.error("MY ORDERS ERROR:", err);
       setOrders([]);
+    } finally {
+      setLoading(false);
     }
-  } catch (err) {
-    console.error("MY ORDERS ERROR:", err);
-    setOrders([]);
-  } finally {
-    setLoading(false);
-  }
-};
+  };
 
   if (loading) {
     return <p className="text-center mt-10">Loading orders...</p>;
@@ -70,16 +70,16 @@ const MyOrders = () => {
         <p className="text-gray-500 text-sm mt-6">No orders found</p>
       )}
 
-      {/* TABLE ROWS */}
+      {/* ORDERS LIST */}
       {orders.map((order) => (
         <div
           key={order._id}
           className="grid grid-cols-5 gap-4 items-center py-4 border-b text-sm"
         >
-          {/* Order ID */}
+          {/* ORDER ID */}
           <div className="font-medium">{order.orderID}</div>
 
-          {/* Date */}
+          {/* DATE */}
           <div className="text-gray-600">
             {new Date(order.createdAt).toLocaleDateString("en-IN", {
               day: "2-digit",
@@ -88,26 +88,26 @@ const MyOrders = () => {
             })}
           </div>
 
-          {/* Status */}
+          {/* STATUS */}
           <div>
             <span
               className={`px-3 py-1 rounded-full text-xs font-semibold
-                ${order.status === "DELIVERED"
-                  ? "bg-green-100 text-green-700"
-                  : order.status === "PENDING"
+                ${
+                  order.status === "DELIVERED"
+                    ? "bg-green-100 text-green-700"
+                    : order.status === "PENDING"
                     ? "bg-yellow-100 text-yellow-700"
                     : "bg-blue-100 text-blue-700"
-                }
-              `}
+                }`}
             >
               {order.status}
             </span>
           </div>
 
-          {/* Amount */}
+          {/* AMOUNT */}
           <div className="font-semibold">₹{order.pricing?.total}</div>
 
-          {/* View Details */}
+          {/* VIEW DETAILS */}
           <div>
             <button
               onClick={() =>
